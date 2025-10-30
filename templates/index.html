@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Serverless Computing for Real-Time Documents</title>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">Serverless Computing for Real-Time Documents</h1>
+        <p class="hero-subtitle">Transform your document processing with cloud-powered intelligence</p>
+        <div class="hero-cta">
+          <a href="#upload" class="cta-button">Get Started</a>
+          <a href="#features" class="cta-button secondary">Learn More</a>
+          <a href="/dashboard" class="cta-button secondary">Dashboard</a>
+          <a href="/comments" class="cta-button secondary">User Reviews</a>
+        </div>
+      </div>
+      <div class="hero-background"></div>
+    </header>
+    <main>
+      <section id="features" class="features">
+        <h2>Why?</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <i class="fas fa-bolt feature-icon"></i>
+            <h3>Lightning Fast</h3>
+            <p>Process documents in real-time with serverless computing</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h3>Secure</h3>
+            <p>Enterprise-grade security for your sensitive documents</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-cloud feature-icon"></i>
+            <h3>Scalable</h3>
+            <p>Handle millions of documents with ease</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-chart-line feature-icon"></i>
+            <h3>Cost-Effective</h3>
+            <p>Pay only for what you use</p>
+          </div>
+        </div>
+      </section>
+      <section id="upload" class="upload-section">
+        <div class="upload-container">
+          <h2>Start Processing</h2>
+          <p>Upload your document and let our AI do the magic</p>
+          <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <div class="upload-area" id="dropZone">
+              <i class="fas fa-cloud-upload-alt upload-icon"></i>
+              <p>Drag and drop your file here or</p>
+              <label class="upload-button">
+                Choose File
+                <input type="file" id="fileInput" name="file" accept=".pdf,.docx,.txt" hidden />
+              </label>
+              <p class="file-info">Supported formats: PDF, DOCX, TXT</p>
+            </div>
+          </form>
+          <div class="upload-progress" hidden>
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+            <p class="progress-text">Uploading... 0%</p>
+          </div>
+        </div>
+      </section>
+
+
+    </main>
+
+    <footer>
+      <div class="footer-content">
+
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">API Reference</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+
+
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Serverless Computing. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+
+</html>

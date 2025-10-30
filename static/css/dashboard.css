@@ -1,0 +1,137 @@
+/* General body and layout styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f6f9;
+    color: #333;
+}
+
+header {
+    background: #1e2a38;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+header p {
+    font-size: 1.1rem;
+    margin-top: 5px;
+}
+
+main {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.documents, .visualization {
+    margin-bottom: 40px;
+}
+
+/* Section titles */
+h2 {
+    color: #1e2a38;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+/* Document List Styles */
+.documents ul {
+    list-style: none;
+    padding: 0;
+}
+
+.documents li {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease-in-out;
+}
+
+.documents li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.documents a {
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 1.1rem;
+}
+
+.documents a:hover {
+    text-decoration: underline;
+}
+
+/* Visualization Section */
+.visualization {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.visualization p {
+    color: #555;
+    font-size: 1.2rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    main {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .documents li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .documents li a {
+        font-size: 1rem;
+    }
+}
+
+/* Footer */
+footer {
+    background: #1e2a38;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+}
+
+footer p {
+    font-size: 0.9rem;
+}
+
+.visualization {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    height: 400px; /* Set a fixed height to avoid layout shifting */
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}

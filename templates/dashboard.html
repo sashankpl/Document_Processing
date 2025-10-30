@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Uploaded Documents</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <header>
+        <h1>Dashboard</h1>
+        <p>Track your uploaded documents and view extracted data summaries</p>
+    </header>
+
+    <main>
+        <section class="documents">
+            <h2>Your Uploaded Documents</h2>
+            <ul>
+                {% for document in documents %}
+                    <li>
+                        <a href="{{ document.url }}" target="_blank">{{ document.key }}</a>
+                    </li>
+                {% else %}
+                    <p>No documents uploaded yet.</p>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="visualization">
+            <h2>Document Uploads Visualization</h2>
+            <canvas id="documentChart"></canvas>
+        </section>
+        
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Serverless Computing. All rights reserved.</p>
+    </footer>
+</body>
+<script>
+    // Dynamically assign the document labels (file names) and page counts from Flask
+    var documentLabels = {{ documents|map(attribute='key')|list|tojson }};
+    var documentPageCounts = {{ documents|map(attribute='page_count')|list|tojson }};
+    
+    var ctx = document.getElementById('documentChart').getContext('2d');
+    var documentChart = new Chart(ctx, {
+        type: 'bar', // Bar chart type
+        data: {
+            labels: documentLabels, // Document names as labels
+            datasets: [{
+                label: 'Number of Pages',
+                data: documentPageCounts, // Dynamic data for pages
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</html>

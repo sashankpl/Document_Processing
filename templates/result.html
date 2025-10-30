@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Document Text Analysis and Chat Application</title>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-book"></i>
+                <h1>Document Analysis</h1>
+            </div>
+            <ul class="nav-links">
+                <li data-tab="original" class="active">
+                    <i class="fas fa-file-pdf"></i>
+                    Original Document
+                </li>
+                <li data-tab="extracted">
+                    <i class="fas fa-file-alt"></i>
+                    Extracted Text
+                </li>
+                <li data-tab="analysis">
+                    <i class="fas fa-chart-line"></i>
+                    Document Analysis
+                </li>
+                <li data-tab="visualization">
+                    <i class="fas fa-chart-pie"></i>
+                    Visualization
+                </li>
+                <li data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </li>
+                <li data-tab="comments">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Comments & Review
+                </li>
+                
+            </ul>
+        </nav>
+
+      <!-- Main Content -->
+<main class="main-content">
+    <!-- Original Document Tab -->
+    <section id="original" class="content-section active">
+        <h2>Original Document</h2>
+        <embed src="{{ file_url }}" type="application/pdf" class="pdf-viewer">
+    </section>
+
+    <!-- Extracted Text Tab -->
+    <section id="extracted" class="content-section">
+        <h2>Extracted Text</h2>
+        <div class="text-content" id="extractedText">
+            {{ text }}
+        </div>
+    </section>
+
+    <!-- Document Analysis Tab -->
+    <section id="analysis" class="content-section">
+        <h2>Document Analysis</h2>
+        <div class="analysis-container">
+            <div class="text-analysis">
+                <div class="text-content">{{ text }}</div>
+            </div>
+            <div class="chat-container">
+                <div class="flex gap-2">
+                    <button class="delete-btn" onclick="deleteChat()"><i class="fas fa-trash"></i></button>
+                    <button class="end-chat-btn" onclick="endChat()"><i class="fas fa-times-circle"></i> End Chat</button>
+                </div>
+                <div class="messages-container" id="chatMessages"></div>
+                <div id="loading" class="loading-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="question" placeholder="Ask a question..." onkeydown="checkEnter(event)">
+                    <button onclick="askQuestion()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button onclick="startVoiceInput()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visualization Tab -->
+    <section id="visualization" class="content-section">
+        <h2>Document Visualization</h2>
+        <div class="visualization-container">
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h3>Word Frequency</h3>
+                    <canvas id="wordFrequencyChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Sentiment Analysis</h3>
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Document Structure</h3>
+                    <canvas id="structureChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Key Topics</h3>
+                    <canvas id="topicsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+    <!-- Dashboard Tab -->
+    <section id="dashboard" class="content-section">
+        <h2>Dashboard</h2>
+        <iframe src="{{ url_for('dashboard') }}" class="dashboard-frame"></iframe>
+    </section>
+
+    <!-- Comments & Review Tab -->
+    <section id="comments" class="content-section">
+        <div class="comments-section">
+            <button class="comments-button" onclick="window.location.href='{{ url_for('comments') }}'">
+                View and Add Comments
+            </button>
+        </div>
+
+        <div class="comment-form-section">
+            <h3 class="comment-form-title">Leave a Comment</h3>
+            <textarea id="userComment" placeholder="Write your comment here..." class="comment-textarea"></textarea>
+            <button class="submit-comment-btn" onclick="submitComment()">Submit Comment</button>
+        </div>
+        <iframe src="{{ url_for('comments') }}" class="dashboard-frame"></iframe>
+    </section>
+</main>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/result.js') }}"></script>
+    <script>
+         async function endChat() {
+        const bucket = "{{ bucket }}";
+        const key = "{{ key }}";
+        
+        try {
+            const response = await fetch('/delete_file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bucket: bucket, key: key })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                window.location.href = '/';
+            } else {
+                console.error("Error deleting file:", data.error);
+                alert("Error ending chat: " + data.error);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while ending the chat.");
+        }
+    }
+        // Tab switching functionality
+        document.querySelectorAll('.nav-links li').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and sections
+                document.querySelectorAll('.nav-links li').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding section
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Initialize charts
+        function initializeCharts() {
+            // Word Frequency Chart
+            new Chart(document.getElementById('wordFrequencyChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Word 1', 'Word 2', 'Word 3', 'Word 4', 'Word 5'],
+                    datasets: [{
+                        label: 'Frequency',
+                        data: [12, 19, 3, 5, 2],
+                        backgroundColor: '#2563EB'
+                    }]
+                }
+            });
+
+            // Sentiment Chart
+            new Chart(document.getElementById('sentimentChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Neutral', 'Negative'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: ['#10B981', '#6B7280', '#EF4444']
+                    }]
+                }
+            });
+
+            // Structure Chart
+            new Chart(document.getElementById('structureChart'), {
+                type: 'radar',
+                data: {
+                    labels: ['Headings', 'Paragraphs', 'Lists', 'Tables', 'Images'],
+                    datasets: [{
+                        label: 'Document Elements',
+                        data: [8, 24, 5, 2, 3],
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderColor: '#2563EB'
+                    }]
+                }
+            });
+
+            // Topics Chart
+            new Chart(document.getElementById('topicsChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: ['Topic 1', 'Topic 2', 'Topic 3', 'Topic 4'],
+                    datasets: [{
+                        data: [11, 16, 7, 14],
+                        backgroundColor: ['#2563EB', '#10B981', '#F59E0B', '#6366F1']
+                    }]
+                }
+            });
+        }
+
+        // Initialize charts when the visualization tab is first clicked
+        document.querySelector('[data-tab="visualization"]').addEventListener('click', () => {
+            setTimeout(initializeCharts, 100);
+        });
+    </script>
+</body>
+</html>
